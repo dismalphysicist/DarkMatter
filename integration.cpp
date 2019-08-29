@@ -11,13 +11,11 @@ using namespace std;
 double start_point = 4.0;
 double end_point = 25.0;
 
-double monteCarloIntegrate(int N, int rounds, double &err, double start=start_point, double end=end_point) {
+double monteCarloIntegrate(int N, int rounds, double &err, valarray<double> (*f) (valarray<double>), double start=start_point, double end=end_point) {
     double ans = 0;
     double sum_y = 0;
     double sum_ysq = 0;
     double s,y;
-
-    srand(time(NULL));
 
     Expo_fit fit;
     double area = fit.rho1(end) - fit.rho1(start);
@@ -55,13 +53,18 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
     return ans;
 }
 
+valarray<double> func (valarray<double> ss) {
+    Integrand inte;
+    return inte.f_multi(ss);
+}
+
 int main() {
     //cout << f(5) << endl;
     double err;
 
     clock_t begin = clock();
 
-    cout << monteCarloIntegrate(1000000,100,err) << endl;
+    cout << monteCarloIntegrate(1000000,100,err,func) << endl;
 
     clock_t end = clock();
 

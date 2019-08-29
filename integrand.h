@@ -2,5 +2,12 @@
 
 using namespace std;
 
-double f (float s);
-valarray<double> f (valarray<double> s);
+class Integrand {
+    const double pi = acos(-1);
+
+    public: 
+    //double f (double s);
+    valarray<double> f (valarray<double> s);
+    //double f_multi (double s);
+    valarray<double> f_multi (valarray<double> s);
+};
