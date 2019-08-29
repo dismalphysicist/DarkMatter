@@ -11,11 +11,13 @@ using namespace std;
 double start_point = 4.0;
 double end_point = 25.0;
 
-double monteCarloIntegrate(int N, int rounds, double &err, valarray<double> (*f) (valarray<double>), double start=start_point, double end=end_point) {
+double monteCarloIntegrate(int N, int rounds, double &err, double start=start_point, double end=end_point) {
     double ans = 0;
     double sum_y = 0;
     double sum_ysq = 0;
     double s,y;
+
+    Integrand inte;
 
     Expo_fit fit;
     double area = fit.rho1(end) - fit.rho1(start);
@@ -39,23 +41,17 @@ double monteCarloIntegrate(int N, int rounds, double &err, valarray<double> (*f)
         valarray<double> ss = fit.s1(rhos);
 
         //y = f/g with normalisation factor 
-        valarray<double> ys = f(ss)/(norm_factor * fit.g1(ss));
+        valarray<double> ys = inte.f(ss)/(norm_factor * fit.g1(ss));
 
         //summing up arrays, keeping running total
         sum_y += ys.sum();
-        valarray<double> ysq = ys*ys;
-        sum_ysq += ysq.sum();
+        sum_ysq += (ys*ys).sum();
 
         //result and error 
         ans = sum_y / ((i+1)*N);
-        err = sqrt(sum_ysq/((i+1)*N) - pow(sum_y/((i+1)*N),2))/((i+1)*N);
+        err = sqrt((sum_ysq/((i+1)*N) - (sum_y/((i+1)*N))*(sum_y/((i+1)*N)))/((i+1)*N));
     }
     return ans;
-}
-
-valarray<double> func (valarray<double> ss) {
-    Integrand inte;
-    return inte.f_multi(ss);
 }
 
 int main() {
@@ -64,7 +60,7 @@ int main() {
 
     clock_t begin = clock();
 
-    cout << monteCarloIntegrate(1000000,100,err,func) << endl;
+    cout << monteCarloIntegrate(1000000,100,err) << endl;
 
     clock_t end = clock();
 
