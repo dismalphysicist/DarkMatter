@@ -72,6 +72,13 @@ float angle_between (array<float,3> v1, array<float,3> v2) {
     return acos(dot_product(v1,v2)/(mag(v1)*mag(v2)));
 }
 
+float psi (array<float,3> v1, array<float,3> v2) {
+    /* Returns the coordinate system rotation angle needed to make the new y-components of v1 and v2 equal. */
+    float alpha = angle_between(v2,v1);
+    float beta = angle_between({0,1,0},v1);
+    return beta + atan((mag(v2)*cos(alpha) - mag(v1)) / sin(alpha));
+}
+
 array<float,3> unit_normal (array<float,3> v1, array<float,3> v2) {
     /* Returns a unit vector normal to the plane defined by the vectors v1 and v2. */ 
     array<float,3> xp = cross_product(v1,v2);
@@ -90,7 +97,10 @@ array<float,3> transformation (array<float,3> v, array<float,3> a1, array<float,
     array<float,3> v_ = rotate_z(v,-phi(n));
     //print(v_); //debugging 
     array<float,3> v__ = rotate_y(v_,-theta(n));
-    return v__;
+
+    array<float,3> v___ = rotate_z(v__,psi(a1,a2));
+
+    return v___;
 }
 
 void print (array<float,3> v) {
@@ -122,6 +132,7 @@ int main() {
     print(transformation({0,-1,0}, {1,0,1}, {-1,0,1}));
     print(transformation(i, {1,0,1}, {-1,0,1}));
     print(transformation(j, {1,0,1}, {-1,0,1}));
+    print(transformation(k, {1,0,1}, {-1,0,1}));
 
     return 0;
 }
