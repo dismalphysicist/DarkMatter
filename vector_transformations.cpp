@@ -103,6 +103,15 @@ array<float,3> transformation (array<float,3> v, array<float,3> a1, array<float,
     return v___;
 }
 
+void lorentz (array<float,3> v1, array<float,3> v2, float &v1_after, float &v2_after) {
+    array<float,3> v1_ = transformation(v1,v1,v2);
+    array<float,3> v2_ = transformation(v2,v1,v2);
+    float gamma = 1/sqrt(1-v1_[1]*v1_[1]);
+
+    v1_after = gamma * v1_[0];
+    v2_after = gamma * v2_[0];
+}
+
 void print (array<float,3> v) {
     /* A convenient print method for arrays. */ 
     cout << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")\n";
