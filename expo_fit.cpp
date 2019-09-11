@@ -62,18 +62,66 @@ valarray<double> Expo_fit::s1 (valarray<double> rhos) {
     return ret;
 }
 
+double Expo_fit::g2 (double s) {
+    return height_2 / (b1 * (s-peak_2)*(s-peak_2) + 1.0);
+}
+valarray<double> Expo_fit::g2 (valarray<double> ss) {
+    valarray<double> ret = valarray<double>(ss.size());
+    
+    for (int i = 0; i < ss.size(); i++) {
+        ret[i] = Expo_fit::g2(ss[i]); 
+    }
+    return ret;
+}
+
+double Expo_fit::rho2 (double s) {
+    return height_2/sqrt(b1) * atan((s-peak_2)*sqrt(b1));
+}
+
+valarray<double> Expo_fit::rho2 (valarray<double> ss) {
+    valarray<double> ret = valarray<double>(ss.size());
+    
+    for (int i = 0; i < ss.size(); i++) {
+        ret[i] = Expo_fit::rho2(ss[i]); 
+    }
+    return ret;
+}
+double Expo_fit::s2 (double rho) {
+    return peak_2 + 1.0/sqrt(b1) * tan(sqrt(b1) * rho / height_2);
+}
+
+valarray<double> Expo_fit::s2 (valarray<double> rhos) {
+    valarray<double> ret = valarray<double>(rhos.size());
+    
+    for (int i = 0; i < rhos.size(); i++) {
+        ret[i] = Expo_fit::s2(rhos[i]); 
+    }
+    return ret;
+}
+
+double Expo_fit::g_tot (double s, double alpha1, double alpha2, double norm_factor_1, double norm_factor_2) {
+    return alpha1*norm_factor_1*g1(s) + alpha2*norm_factor_2*g2(s);
+}
+
+valarray<double> Expo_fit::g_tot (valarray<double> ss, double alpha1, double alpha2, double norm_factor_1, double norm_factor_2) {
+    valarray<double> ret = valarray<double>(ss.size());
+    
+    for (int i = 0; i < ss.size(); i++) {
+        ret[i] = Expo_fit::g_tot(ss[i], alpha1, alpha2, norm_factor_1, norm_factor_2); 
+    }
+    return ret;
+}
+
 /*
 int main() {
-    cout << log(1) << endl;
-    cout << log(2.71828) << endl;
     Expo_fit e;
-    valarray<double> test = {0,5,10,15};
-    e.g1(test);
+    double test_s = {20};
+    double rho = e.rho2(test_s);
+    cout << rho << endl;
     
-    valarray<double> test_rhos = {0.1,0.2,0.3,0.4,0.5};
-    valarray<double> ss = e.s1(test_rhos);
-    for(double i : ss) cout << i << ", ";
-    cout << endl; 
+    double s = e.s2(rho);
+    cout << s << endl;
+    cout << e.g_tot(5,0.5,0.5,2,2) << endl; 
     return 0;
 }
 */

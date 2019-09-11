@@ -15,7 +15,6 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
     double ans = 0;
     double sum_y = 0;
     double sum_ysq = 0;
-    double s,y;
 
     Integrand inte;
 

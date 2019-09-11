@@ -5,7 +5,7 @@
 
 using namespace std;
 
-/*
+
 double Integrand::f (double s) {
 
     double m = 1;
@@ -21,7 +21,7 @@ double Integrand::f (double s) {
 
     return factor0 * factor1 * factor2;   
 }
-*/
+
 
 valarray<double> Integrand::f (valarray<double> s) {
 
@@ -30,7 +30,7 @@ valarray<double> Integrand::f (valarray<double> s) {
 
     //constant scalar coefficient
     //double factor0 = sqrt(2/pi) / (pow(v0,3)*pow(m,4)); //liu zhenning 
-    //double factor0 = 1/sqrt(2*pi) * pow(m,4) * pow(v_0,3)); //lois flower 
+    //double factor0 = 1/(sqrt(2*pi) * pow(m,4) * pow(v0,3)); //lois flower 
     double factor0 = 1.0;
 
     valarray<double> factor1 = (s-4*m*m) * exp(-(s-4*m*m)/(2*m*m * v0*v0)); //velocity and distribution
@@ -40,7 +40,7 @@ valarray<double> Integrand::f (valarray<double> s) {
     return factor0 * factor1 * factor2;   
 }
 
-/*
+
 double Integrand::f_multi (double s) {
     double m = 1;
     double v0 = 1;
@@ -55,7 +55,7 @@ double Integrand::f_multi (double s) {
 
     return factor0 * factor1 * factor2;   
 }
-*/
+
 
 valarray<double> Integrand::f_multi (valarray<double> s) {
     double m = 1;
