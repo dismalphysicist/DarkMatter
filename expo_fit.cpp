@@ -63,7 +63,7 @@ valarray<double> Expo_fit::s1 (valarray<double> rhos) {
 }
 
 double Expo_fit::g2 (double s) {
-    return height_2 / (b1 * (s-peak_2)*(s-peak_2) + 1.0);
+    return height_2 / ((s-peak_2)*(s-peak_2) + width_term);
 }
 valarray<double> Expo_fit::g2 (valarray<double> ss) {
     valarray<double> ret = valarray<double>(ss.size());
@@ -75,7 +75,7 @@ valarray<double> Expo_fit::g2 (valarray<double> ss) {
 }
 
 double Expo_fit::rho2 (double s) {
-    return height_2/sqrt(b1) * atan((s-peak_2)*sqrt(b1));
+    return height_2/sqrt(peak_2*width_term) * atan((s-peak_2)*sqrt(peak_2*width_term));
 }
 
 valarray<double> Expo_fit::rho2 (valarray<double> ss) {
@@ -87,7 +87,7 @@ valarray<double> Expo_fit::rho2 (valarray<double> ss) {
     return ret;
 }
 double Expo_fit::s2 (double rho) {
-    return peak_2 + 1.0/sqrt(b1) * tan(sqrt(b1) * rho / height_2);
+    return peak_2 + 1.0/sqrt(peak_2*width_term) * tan(sqrt(peak_2*width_term) * rho / height_2);
 }
 
 valarray<double> Expo_fit::s2 (valarray<double> rhos) {
@@ -115,13 +115,21 @@ valarray<double> Expo_fit::g_tot (valarray<double> ss, double alpha1, double alp
 /*
 int main() {
     Expo_fit e;
-    double test_s = {20};
-    double rho = e.rho2(test_s);
-    cout << rho << endl;
+
+    valarray<double> test_s = {4,5,6,7,8};
+    valarray<double> rho = e.rho2(test_s);
+
+    for (int i=0;i<rho.size();i++) {
+        cout << rho[i] << ", ";
+    }
+    cout << endl;
     
-    double s = e.s2(rho);
-    cout << s << endl;
-    cout << e.g_tot(5,0.5,0.5,2,2) << endl; 
+    valarray<double> s = e.s2(rho);
+    for (int i=0;i<s.size();i++) {
+        cout << s[i] << ", ";
+    }
+    cout << endl;
+    //cout << e.g_tot(5,0.5,0.5,2,2) << endl; 
     return 0;
 }
 */

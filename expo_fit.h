@@ -10,9 +10,9 @@ class Expo_fit {
     double height = 0.1295;
     double k2 = 0.3;
     double k1 = 1;
-    double peak_2 = 30.0;
-    double height_2 = 0.00002;
-    double b1 = 7.0;
+    double peak_2 = 8317.44;
+    double height_2 = 8e-4;
+    double width_term = 8317.44*2.5*2.5;
 
     public: 
 

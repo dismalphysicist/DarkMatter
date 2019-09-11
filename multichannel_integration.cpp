@@ -8,27 +8,30 @@
 
 using namespace std;
 
-double start_point = 4.0;
-double end_point = 40.0;
+double start_point = 1601;
+double end_point = 10000;
 
 double alpha_1 = 0.5;
 double alpha_2 = 0.5;
 
-double int1_1=1.0, int2_1=1.0, area_1=1.0, norm_factor_1=1.0; 
-double int1_2=1.0, int2_2=1.0, area_2=1.0, norm_factor_2=1.0;
+double int1_1, int2_1, area_1, norm_factor_1; 
+double int1_2, int2_2, area_2, norm_factor_2;
 
-void initialise(Integrand inte, Expo_fit fit, double start = start_point, double end = end_point) {
+void initialise(Integrand inte, Expo_fit fit,
+double &int1_1, double &int2_1, double &int1_2, double &int2_2,
+double &area_1, double &area_2, double &norm_factor_1, double &norm_factor_2,
+double start = start_point, double end = end_point) {
     /* Initialisation: specify range of integration. */ 
 
     int1_1 = fit.rho1(start);
     int2_1 = fit.rho1(end);
-    double area_1 = int2_1 - int1_1; 
-    double norm_factor_1 = 1.0/area_1;
+    area_1 = int2_1 - int1_1; 
+    norm_factor_1 = 1.0/area_1;
 
     int1_2 = fit.rho2(start);
     int2_2 = fit.rho2(end);
-    double area_2 = int2_2 - int1_2; 
-    double norm_factor_2 = 1.0/area_2;
+    area_2 = int2_2 - int1_2; 
+    norm_factor_2 = 1.0/area_2;
 }
 
 double monteCarloIntegrate(int N, int rounds, double &err, double start=start_point, double end=end_point) {
@@ -43,7 +46,7 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
     Integrand inte;
     Expo_fit fit;
 
-    initialise(inte, fit);
+    initialise(inte, fit, int1_1,int2_1,int1_2,int2_2,area_1,area_2,norm_factor_1,norm_factor_2);
     //cout << "Initialised" << endl; //debugging 
 
     double ans = 0;
@@ -69,12 +72,9 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
 
         //initialising arrays of rhos with random numbers 
         valarray<double> rhos1 = valarray<double>(N);
-        for (int i=0; i<N; i++) {
-            rhos1[i] = uni1(rng);
-        }
-
         valarray<double> rhos2 = valarray<double>(N);
         for (int i=0; i<N; i++) {
+            rhos1[i] = uni1(rng);
             rhos2[i] = uni2(rng);
         }
 
@@ -91,8 +91,14 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
             }
 
             //y = f/g with normalisation factor
-            ys[i] = inte.f_multi(ss[i])/fit.g_tot(ss[i], alpha_1, alpha_2, norm_factor_1, norm_factor_2);
+            ys[i] = inte.sigmav(ss[i])/fit.g_tot(ss[i], alpha_1, alpha_2, norm_factor_1, norm_factor_2);
         }
+        /*
+        for (int i=0;i<N;i++) {
+            cout << ys[i] << ", ";
+        }
+        cout << endl;
+        */
 
         sum_y += ys.sum();
         sum_ysq += (ys*ys).sum();
@@ -118,7 +124,7 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
 
 int main() {
     double err;
-    cout << monteCarloIntegrate(100,1,err) << endl;
+    cout << monteCarloIntegrate(1000000,100,err) << endl;
     cout << err << endl;
     return 0;
 }
