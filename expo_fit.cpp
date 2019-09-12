@@ -5,8 +5,8 @@
 
 using namespace std;
 
-Expo_fit::Expo_fit(double m, double height_, double k1_, double k2_, double M, double height_2_, double width) {
-    peak_0 = 6*m*m; //most probable velocity 
+Expo_fit::Expo_fit(double m, double T, double height_, double k1_, double k2_, double M, double height_2_, double width) {
+    peak_0 = 2*m*(2*m+T); //most probable velocity 
     height = height_;
     k1 = k1_;
     k2 = k2_;

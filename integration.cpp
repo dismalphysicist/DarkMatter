@@ -27,8 +27,8 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
 
     Integrand inte(m,T,V,A,Vtil,Atil);
 
-    Expo_fit fit(m,1,1,1,0,0,0);
-    
+    Expo_fit fit(m,1,1,1,1,0,0,0);
+
     double area = fit.rho1(end) - fit.rho1(start);
     double norm_factor = 1.0/area;
     cout << "Normalisation factor = " << norm_factor << endl;

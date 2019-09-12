@@ -16,7 +16,7 @@ class Expo_fit {
     double width_term;
 
     public: 
-    Expo_fit (double m, double height_, double k1_, double k2_, double M, double height_2_, double width);
+    Expo_fit (double m, double T, double height_, double k1_, double k2_, double M, double height_2_, double width);
 
     double g1 (double s);
     valarray<double> g1 (valarray<double> ss);

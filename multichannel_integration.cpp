@@ -12,25 +12,26 @@ const double pi = acos(-1);
 
 //////////// DARK MATTER PARAMETERS /////////////
 double m = 20; //dark matter mass 
-double T = 20; //temperature
-double V = 0.1 * 1; //DM vector coupling constant 
-double Vtil = sqrt(4*pi/128) * (1 + 2*0.23)/ (2*sqrt(0.23)*0.88); //electron vector coupling constant 
-double A = 0.1 * 1; //DM axial c.c.
-double Atil = sqrt(4*pi/128) / (2*sqrt(0.23)*0.88); //electron axial c.c. 
+double T = 2; //temperature
+double V = -0.1; //DM vector coupling constant 0.1 * 1
+double Vtil = sqrt(4*pi/128) * (-0.5 + 2*0.23)/ (2*sqrt(0.23)*0.88); //electron vector coupling constant 
+double A = 0.1; //DM axial c.c. 0.1 * 1
+double Atil = sqrt(4*pi/128) *0.5 / (2*0.23*0.88); //electron axial c.c. 
 
 //////////// INTEGRATION PARAMETERS /////////////
-double height = 1.5e-11;
-double k2 = 0.25e-3;
-double k1 = 0.5e-3;
+double height = 1.5e-11; //height of exponentials modelling velocity peak 
+double k2 = 0.25e-3; //exp(k1 s)
+double k1 = 0.5e-3; //exp(-k2 s)
 
-double height_2 = 4e-6;
+double height_2 = 4e-6; //height of g2(s) modelling cross section peak 
 
-double start_point = 1601;
-double end_point = 10000;
+double start_point = 4*m*m + 1; //cutoff minimum energy, so sigmav does not blow up or become imaginary
+double end_point = 10000; //a good approximate for infinity, since the tail is very small beyond this point 
 
-double alpha_1 = 0.5;
-double alpha_2 = 0.5;
+double alpha_1 = 0.5; //probability of sampling from g1(s)
+double alpha_2 = 0.5; //probability of sampling from g2(s)
 
+//these are initialised by the initialise() function 
 double int1_1, int2_1, area_1, norm_factor_1; 
 double int1_2, int2_2, area_2, norm_factor_2;
 
@@ -55,13 +56,11 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
     /* Monte Carlo integrator by importance sampling
     N: number of points per round
     rounds: number of rounds
-    fit_1: the first fitting function
-    fit_2: the second fitting function
-    inte: function, the integrand
     start, end: floats, range of integration */ 
 
+    //passing relevant parameters 
     Integrand inte(m,T,V,A,Vtil,Atil);
-    Expo_fit fit(m,height,k1,k2,inte.M,height_2,inte.gamma);
+    Expo_fit fit(m,T,height,k1,k2,inte.M,height_2,inte.gamma);
 
     initialise(inte, fit, int1_1,int2_1,int1_2,int2_2,area_1,area_2,norm_factor_1,norm_factor_2);
     //cout << "Initialised" << endl; //debugging 
@@ -141,7 +140,12 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
 
 int main() {
     double err;
-    cout << monteCarloIntegrate(1000000,100,err) << endl;
-    cout << err << endl;
+    double mc = monteCarloIntegrate(1000000,100,err);
+
+    cout << mc << " GeV^-2" << endl;
+    cout << err << " GeV^-2" << endl;
+
+    cout << mc*0.389/1e-9 << " picobarns" << endl;
+    cout << err*0.389/1e-9 << " picobarns" << endl;
     return 0;
 }
