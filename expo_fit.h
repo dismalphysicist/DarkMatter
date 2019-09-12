@@ -8,8 +8,8 @@ class Expo_fit {
     private:
     double peak_0 = 2 + 2*sqrt(3.0);
     double height = 0.1295;
-    double k2 = 0.3;
-    double k1 = 1;
+    double k2 = 0.00025;
+    double k1 = 0.0005;
     double peak_2 = 8317.44;
     double height_2 = 8e-4;
     double width_term = 8317.44*2.5*2.5;
