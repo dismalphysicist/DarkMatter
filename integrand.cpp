@@ -5,6 +5,15 @@
 
 using namespace std;
 
+Integrand::Integrand (double m_, double T_, double V_, double A_, double Vtil_, double Atil_) {
+    m = m_;
+    T = T_;
+    v0 = k_B*T/m;
+    V = V_;
+    A = A_;
+    Vtil = Vtil_;
+    Atil = Atil_;
+}
 
 double Integrand::f (double s) {
 

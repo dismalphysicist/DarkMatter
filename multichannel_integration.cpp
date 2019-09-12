@@ -8,6 +8,23 @@
 
 using namespace std;
 
+const double pi = acos(-1);
+
+//////////// DARK MATTER PARAMETERS /////////////
+double m = 20; //dark matter mass 
+double T = 20; //temperature
+double V = 0.1 * 1; //DM vector coupling constant 
+double Vtil = sqrt(4*pi/128) * (1 + 2*0.23)/ (2*sqrt(0.23)*0.88); //electron vector coupling constant 
+double A = 0.1 * 1; //DM axial c.c.
+double Atil = sqrt(4*pi/128) / (2*sqrt(0.23)*0.88); //electron axial c.c. 
+
+//////////// INTEGRATION PARAMETERS /////////////
+double height = 1.5e-11;
+double k2 = 0.25e-3;
+double k1 = 0.5e-3;
+
+double height_2 = 4e-6;
+
 double start_point = 1601;
 double end_point = 10000;
 
@@ -43,8 +60,8 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
     inte: function, the integrand
     start, end: floats, range of integration */ 
 
-    Integrand inte;
-    Expo_fit fit;
+    Integrand inte(m,T,V,A,Vtil,Atil);
+    Expo_fit fit(m,height,k1,k2,inte.M,height_2,inte.gamma);
 
     initialise(inte, fit, int1_1,int2_1,int1_2,int2_2,area_1,area_2,norm_factor_1,norm_factor_2);
     //cout << "Initialised" << endl; //debugging 

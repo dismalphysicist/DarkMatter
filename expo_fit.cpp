@@ -5,6 +5,17 @@
 
 using namespace std;
 
+Expo_fit::Expo_fit(double m, double height_, double k1_, double k2_, double M, double height_2_, double width) {
+    peak_0 = 6*m*m; //most probable velocity 
+    height = height_;
+    k1 = k1_;
+    k2 = k2_;
+
+    peak_2 = M*M; //Z resonance 
+    height_2 = height_2_;
+    width_term = M*M*width*width; // M^2 Gamma^2 
+}
+
 double Expo_fit::g1 (double s) {
     if (s < peak_0) {  
         return height * exp(k1 * (s - peak_0));

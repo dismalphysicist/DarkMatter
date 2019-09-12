@@ -8,6 +8,15 @@
 
 using namespace std;
 
+const double pi = acos(-1);
+
+double m = 20; //dark matter mass 
+double T = 20; //temperature
+double V = 0.1 * 1;
+double Vtil = sqrt(4*pi/128) * (1 + 2*0.23)/ (2*sqrt(0.23)*0.88);
+double A = 0.1 * 1;
+double Atil = sqrt(4*pi/128) / (2*sqrt(0.23)*0.88);
+
 double start_point = 4.0;
 double end_point = 25.0;
 
@@ -16,9 +25,10 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
     double sum_y = 0;
     double sum_ysq = 0;
 
-    Integrand inte;
+    Integrand inte(m,T,V,A,Vtil,Atil);
 
-    Expo_fit fit;
+    Expo_fit fit(m,1,1,1,0,0,0);
+    
     double area = fit.rho1(end) - fit.rho1(start);
     double norm_factor = 1.0/area;
     cout << "Normalisation factor = " << norm_factor << endl;
