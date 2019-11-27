@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream> 
 #include <cmath>
 #include <valarray>
 #include <random>
@@ -11,8 +12,8 @@ using namespace std;
 const double pi = acos(-1);
 
 //////////// DARK MATTER PARAMETERS /////////////
-double m = 20; //dark matter mass 
-double T = 2; //temperature
+double m = 10; //dark matter mass 
+double T = 0.9; //temperature in natural units 
 double V = -0.1; //DM vector coupling constant 0.1 * 1
 double Vtil = sqrt(4*pi/128) * (-0.5 + 2*0.23)/ (2*sqrt(0.23)*0.88); //electron vector coupling constant 
 double A = 0.1; //DM axial c.c. 0.1 * 1
@@ -58,6 +59,10 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
     rounds: number of rounds
     start, end: floats, range of integration */ 
 
+    // Opening file 
+    ofstream results;
+    results.open("results.csv");
+
     //passing relevant parameters 
     Integrand inte(m,T,V,A,Vtil,Atil);
     Expo_fit fit(m,T,height,k1,k2,inte.M,height_2,inte.gamma);
@@ -68,7 +73,7 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
     double ans = 0;
     double sum_y = 0;
     double sum_ysq = 0;
-    double s,y;
+    //double s,y;
 
     //setting up random number generator 
     random_device rd;     // only used once to initialise (seed) engine
@@ -123,29 +128,32 @@ double monteCarloIntegrate(int N, int rounds, double &err, double start=start_po
         ans = sum_y / ((j+1)*N);
         err = sqrt((sum_ysq/((j+1)*N) - (sum_y/((j+1)*N))*(sum_y/((j+1)*N)))/((j+1)*N));
     
-        //weights? not sure what this all does
-        /*
-        double dw1 = (fit.g1(ss) *ys*ys * norm_factor_1 / fit.g_tot(ss[i], alpha_1, alpha_2, norm_factor_1, norm_factor_2)).sum();
-        double dw2 = (fit.g2(ss) *ys*ys * norm_factor_1 / fit.g_tot(ss[i], alpha_1, alpha_2, norm_factor_1, norm_factor_2)).sum();
+        //weights? 
+        
+        double dw1 = (fit.g1(ss) *ys*ys * norm_factor_1 / fit.g_tot(ss[j], alpha_1, alpha_2, norm_factor_1, norm_factor_2)).sum();
+        double dw2 = (fit.g2(ss) *ys*ys * norm_factor_1 / fit.g_tot(ss[j], alpha_1, alpha_2, norm_factor_1, norm_factor_2)).sum();
     
         double alpha1n = alpha_1 * sqrt(dw1);
         double alpha2n = alpha_2 * sqrt(dw2);
 
         double alpha1 = alpha1n / (alpha1n+alpha2n);                         
         double alpha2 = alpha2n / (alpha1n+alpha2n);     
-        */
+        
+        // File write 
+        results << ss[j]<<','<<ans<<','<<err<<','<<sum_ysq/N<<','<<alpha1<<','<<alpha2<<endl; 
     }
+    results.close(); 
     return ans;
 }
 
 int main() {
     double err;
-    double mc = monteCarloIntegrate(1000000,100,err);
+    double mc = monteCarloIntegrate(10000,100,err);
 
     cout << mc << " GeV^-2" << endl;
     cout << err << " GeV^-2" << endl;
 
-    cout << mc*0.389/1e-9 << " picobarns" << endl;
-    cout << err*0.389/1e-9 << " picobarns" << endl;
+    cout << mc*0.389*1e9 << " pb" << endl;
+    cout << err*0.389*1e9 << " pb" << endl;
     return 0;
 }

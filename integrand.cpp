@@ -33,8 +33,8 @@ valarray<double> Integrand::f (valarray<double> s) {
 
     //constant scalar coefficient
     //double factor0 = sqrt(2/pi) / (pow(v0,3)*pow(m,4)); //liu zhenning 
-    //double factor0 = 1/(sqrt(2*pi) * pow(m,4) * pow(v0,3)); //lois flower 
-    double factor0 = 1.0;
+    double factor0 = 1/(sqrt(2*pi) * pow(m,4) * pow(v0,3)); //lois flower 
+    //double factor0 = 1.0;
 
     valarray<double> factor1 = (s-4*m*m) * exp(-(s-4*m*m)/(2*m*m * v0*v0)); //velocity and distribution
 
@@ -91,15 +91,20 @@ valarray<double> Integrand::sigma (valarray<double> s) {
 }
 
 double Integrand::sigmav (double s) {
-    double prefactor = 1/(sqrt(2*pi) * pow(m,4) * pow(v0,3));
-    double velocityfactor = (s - 4.0*(m*m)) * exp(-(s-4.0*m*m)/(2.0*m*m*v0*v0));
-    return prefactor*sigma(s)*velocityfactor;
+    double prefactor = abs(1/(2 * pow(m,4) * pow(v0,3)) * pow(v0,2)/16 *(sqrt(2*pi)*v0*erf(sqrt(2)/v0)-4*exp(2/(v0*v0))));
+    //cout << "Prefactor = " << prefactor << endl; //debugging 
+    double velocity = sqrt(s - 4.0*(m*m));
+	double weight = sqrt(s - 4.0*(m*m)) * exp(-(s-4.0*m*m)/(2.0*m*m*v0*v0));
+    return prefactor*sigma(s)*velocity*weight;
 }
 
 valarray<double> Integrand::sigmav (valarray<double> s) {
-    double prefactor = 1/(sqrt(2*pi) * pow(m,4) * pow(v0,3));
-    valarray<double> velocityfactor = (s - 4.0*(m*m)) * exp(-(s-4.0*m*m)/(2.0*m*m*v0*v0));
-    return prefactor*sigma(s)*velocityfactor;
+    valarray<double> ret = valarray<double>(s.size());
+    
+    for (int i = 0; i < s.size(); i++) {
+        ret[i] = Integrand::sigmav(s[i]);
+    }
+    return ret;
 }
 
 /*
