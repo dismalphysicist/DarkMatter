@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <boost/math/special_functions/bessel.hpp> 
 #include <valarray>
 #include "integrand.h"
 
@@ -91,10 +92,16 @@ valarray<double> Integrand::sigma (valarray<double> s) {
 }
 
 double Integrand::sigmav (double s) {
-    double prefactor = abs(1/(2 * pow(m,4) * pow(v0,3)) * pow(v0,2)/16 *(sqrt(2*pi)*v0*erf(sqrt(2)/v0)-4*exp(2/(v0*v0))));
-    //cout << "Prefactor = " << prefactor << endl; //debugging 
-    double velocity = sqrt(s - 4.0*(m*m));
-	double weight = sqrt(s - 4.0*(m*m)) * exp(-(s-4.0*m*m)/(2.0*m*m*v0*v0));
+    double velocity = sqrt(s - 4.0*(m*m))/m; 
+
+    // Nonrelativistic 
+    //double prefactor = sqrt(2/pi)/(2*pow(v0,3)*pow(m,3)); 
+	//double weight = sqrt(s - 4.0*(m*m)) * exp(-(s-4.0*m*m)/(2.0*m*m*v0*v0));
+
+    // Relativistic 
+    double prefactor = 1/(8*T*pow(m,3)*pow(boost::math::cyl_bessel_k(2,m/T),2));
+    double weight = sqrt(s - 4.0*(m*m))*sqrt(s)*boost::math::cyl_bessel_k(1,sqrt(s)/T); 
+
     return prefactor*sigma(s)*velocity*weight;
 }
 
@@ -109,16 +116,16 @@ valarray<double> Integrand::sigmav (valarray<double> s) {
 
 /*
 int main() {
-    Integrand inte; 
+    Integrand inte(1,1,1,1,1,1); 
 
     valarray<double> test = {4,5,6,7,8};
     for(double i : test) cout << i << ", ";
     cout << endl;
 
-    for(double i : test) cout << inte.f_multi(i) << ", "; //element by element
+    for(double i : test) cout << inte.sigmav(i) << ", "; //element by element
     cout << endl;
 
-    for(double a : inte.f_multi(test)) cout << a << ", "; //whole array
+    for(double a : inte.sigmav(test)) cout << a << ", "; //whole array
     cout << endl;
     return 0;
 }
