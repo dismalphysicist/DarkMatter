@@ -92,15 +92,15 @@ valarray<double> Integrand::sigma (valarray<double> s) {
 }
 
 double Integrand::sigmav (double s) {
-    double velocity = sqrt(s - 4.0*(m*m))/m; 
-
     // Nonrelativistic 
-    //double prefactor = sqrt(2/pi)/(2*pow(v0,3)*pow(m,3)); 
-	//double weight = sqrt(s - 4.0*(m*m)) * exp(-(s-4.0*m*m)/(2.0*m*m*v0*v0));
+    double velocity = sqrt(s - 4.0*(m*m))/m; 
+    double prefactor = sqrt(2/pi)/(2*pow(v0,3)*pow(m,3)); 
+	double weight = sqrt(s - 4.0*(m*m)) * exp(-(s-4.0*m*m)/(2.0*m*m*v0*v0));
 
     // Relativistic 
-    double prefactor = 1/(8*T*pow(m,3)*pow(boost::math::cyl_bessel_k(2,m/T),2));
-    double weight = sqrt(s - 4.0*(m*m))*sqrt(s)*boost::math::cyl_bessel_k(1,sqrt(s)/T); 
+    // double velocity = sqrt(s*(s-4*m*m))/(s-2*m*m); 
+    // double prefactor = 1/(8*T*pow(m,3)*pow(boost::math::cyl_bessel_k(2,m/T),2));
+    // double weight = sqrt(s - 4.0*(m*m))*(s-2*m*m)*boost::math::cyl_bessel_k(1,sqrt(s)/T); 
 
     return prefactor*sigma(s)*velocity*weight;
 }
